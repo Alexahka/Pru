@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кнопки Приложение</title>
+    <title>Тест на психологический портрет</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,6 +36,9 @@
         .btn:hover {
             background: #0056b3;
         }
+        .hidden {
+            display: none;
+        }
         .output {
             margin-top: 20px;
             font-size: 18px;
@@ -46,16 +49,69 @@
 <body>
 
     <div class="container">
-        <h2>Кнопки Приложение</h2>
-        <button class="btn" onclick="buttonClicked(1)">Кнопка 1</button>
-        <button class="btn" onclick="buttonClicked(2)">Кнопка 2</button>
-        <button class="btn" onclick="buttonClicked(3)">Кнопка 3</button>
-        <p class="output" id="outputText">Нажмите кнопку</p>
+        <h2>Тест на психологический портрет</h2>
+        <p id="questionText">Нажмите "Начать тест", чтобы узнать свой результат.</p>
+
+        <button class="btn" id="startBtn" onclick="startTest()">Начать тест</button>
+
+        <div id="testContainer" class="hidden">
+            <p id="question"></p>
+            <button class="btn" onclick="answer(true)">Да</button>
+            <button class="btn" onclick="answer(false)">Нет</button>
+        </div>
+
+        <p class="output" id="resultText"></p>
     </div>
 
     <script>
-        function buttonClicked(number) {
-            document.getElementById("outputText").textContent = "Вы нажали кнопку " + number;
+        const questions = [
+            { text: "Вы часто переживаете по пустякам?", yesPoints: 2, noPoints: 0 },
+            { text: "Вам легко знакомиться с новыми людьми?", yesPoints: 2, noPoints: 1 },
+            { text: "Вы предпочитаете одиночество?", yesPoints: 2, noPoints: 0 },
+            { text: "В стрессовых ситуациях вы сохраняете спокойствие?", yesPoints: 1, noPoints: 2 },
+            { text: "Вы любите пробовать что-то новое?", yesPoints: 2, noPoints: 1 },
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function startTest() {
+            document.getElementById("startBtn").classList.add("hidden");
+            document.getElementById("testContainer").classList.remove("hidden");
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById("question").textContent = questions[currentQuestion].text;
+            } else {
+                endTest();
+            }
+        }
+
+        function answer(isYes) {
+            if (isYes) {
+                score += questions[currentQuestion].yesPoints;
+            } else {
+                score += questions[currentQuestion].noPoints;
+            }
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function endTest() {
+            document.getElementById("testContainer").classList.add("hidden");
+
+            let resultText = "";
+            if (score <= 3) {
+                resultText = "Вы спокойный и уравновешенный человек. Продолжайте в том же духе!";
+            } else if (score <= 6) {
+                resultText = "Вы эмоциональный, но умеете контролировать себя. Иногда стоит расслабиться.";
+            } else {
+                resultText = "Вы очень чувствительный человек. Попробуйте меньше переживать!";
+            }
+
+            document.getElementById("resultText").textContent = `Ваш результат: ${score} баллов. ${resultText}`;
         }
     </script>
 
